@@ -4,7 +4,7 @@
 ##########################################################################################################
 
 terraform {
-  required_version = "< 1.3.0"
+  required_version = ">= 1.5.0"
   required_providers {
     oci = {
       source = "oracle/oci"
@@ -19,7 +19,7 @@ resource "oci_identity_domains_group" "group" {
   schemas       = ["urn:ietf:params:scim:schemas:core:2.0:Group"]
 
   lifecycle {
-    ignore_changes = [ idcs_endpoint
+    ignore_changes = [idcs_endpoint
     ]
   }
 }

@@ -4,7 +4,7 @@
 # ###################################################################################################### #
 
 terraform {
-  required_version = "< 1.3.0"
+  required_version = ">= 1.5.0"
   required_providers {
     oci = {
       source = "oracle/oci"
@@ -18,11 +18,11 @@ terraform {
 resource "oci_core_service_gateway" "sgw" {
   compartment_id = var.compartment_id
   display_name   = var.sgw_display_name
-  vcn_id         = var.vcn_id 
+  vcn_id         = var.vcn_id
   route_table_id = oci_core_route_table.route_table.id
 
   services {
-    service_id = var.service_id#lookup(data.oci_core_services.service_gateway_all_oci_services.services[0], "id")
+    service_id = var.service_id #lookup(data.oci_core_services.service_gateway_all_oci_services.services[0], "id")
   }
 }
 

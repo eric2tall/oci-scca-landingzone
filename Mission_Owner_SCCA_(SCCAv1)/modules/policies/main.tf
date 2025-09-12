@@ -4,7 +4,7 @@
 # ###################################################################################################### #
 
 terraform {
-  required_version = "< 1.3.0"
+  required_version = ">= 1.5.0"
   required_providers {
     oci = {
       source = "oracle/oci"
@@ -20,6 +20,6 @@ resource "oci_identity_policy" "policies" {
 }
 
 resource "time_sleep" "policy_propagation_delay" {
-  depends_on = [oci_identity_policy.policies]
+  depends_on      = [oci_identity_policy.policies]
   create_duration = "90s"
 }

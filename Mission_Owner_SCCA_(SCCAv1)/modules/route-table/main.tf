@@ -4,7 +4,7 @@
 # ###################################################################################################### #
 
 terraform {
-  required_version = "< 1.3.0"
+  required_version = ">= 1.5.0"
   required_providers {
     oci = {
       source = "oracle/oci"
@@ -32,7 +32,7 @@ resource "oci_core_route_table" "route_table" {
 }
 
 resource "oci_core_route_table_attachment" "oci_core_route_table_attachment" {
-  count            = var.subnet_name != "" ? 1 : 0
+  count = var.subnet_name != "" ? 1 : 0
   #count           = var.is_default == false ? 1 : 0
   subnet_id      = var.subnet_id
   route_table_id = oci_core_route_table.route_table[0].id
