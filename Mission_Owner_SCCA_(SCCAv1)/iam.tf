@@ -35,28 +35,28 @@ module "identity_domain" {
 }
 
 module "vdss_admin_group" {
-  source                   = "./modules/non-default-domain-group"
-  idcs_endpoint            = module.identity_domain[0].domain.url
-  group_display_name       = local.identity_domain.vdss_admin_group_name
+  source             = "./modules/non-default-domain-group"
+  idcs_endpoint      = module.identity_domain[0].domain.url
+  group_display_name = local.identity_domain.vdss_admin_group_name
 }
 
 module "vdms_admin_group" {
-  source                   = "./modules/non-default-domain-group"
-  idcs_endpoint            = module.identity_domain[0].domain.url
-  group_display_name       = local.identity_domain.vdms_admin_group_name
+  source             = "./modules/non-default-domain-group"
+  idcs_endpoint      = module.identity_domain[0].domain.url
+  group_display_name = local.identity_domain.vdms_admin_group_name
 }
 
 module "workload_admin_group" {
-  source                   = "./modules/non-default-domain-group"
-  idcs_endpoint            = module.identity_domain[0].domain.url
-  group_display_name       = local.identity_domain.workload_admin_group_name
+  source             = "./modules/non-default-domain-group"
+  idcs_endpoint      = module.identity_domain[0].domain.url
+  group_display_name = local.identity_domain.workload_admin_group_name
 }
 
 module "osms_dynamic_group" {
-  source                   = "./modules/identity-domain-dynamic-group"
-  idcs_endpoint            = module.identity_domain[0].domain.url
-  group_display_name       = local.identity_domain.dynamic_groups.osms_dynamic_group.dynamic_group_name
-  matching_rule            = local.identity_domain.dynamic_groups.osms_dynamic_group.matching_rule
+  source             = "./modules/identity-domain-dynamic-group"
+  idcs_endpoint      = module.identity_domain[0].domain.url
+  group_display_name = local.identity_domain.dynamic_groups.osms_dynamic_group.dynamic_group_name
+  matching_rule      = local.identity_domain.dynamic_groups.osms_dynamic_group.matching_rule
 }
 
 locals {
@@ -87,6 +87,16 @@ locals {
       "Allow service objectstorage-${var.secondary_region} to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label} where target.key.id = ${module.master_encryption_key.key_ocid}",
       "Allow service blockstorage,FssOc${var.realm_key}Prod,oke,streaming to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label} where target.key.id = ${module.master_encryption_key.key_ocid}",
       "Allow service blockstorage, objectstorage-${var.region}, objectstorage-${var.secondary_region}, FssOc${var.realm_key}Prod, oke, streaming to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label}"
+    ]
+  }
+  key_policy_onsr = {
+    name        = "OCI-SCCA-LZ-Key-ONSR-Policy-${var.resource_label}"
+    description = "OCI SCCA ONSR Landing Zone Key Policy"
+
+    statements = [
+      "Allow service objectstorage-${var.region} to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label} where target.key.id = ${module.master_encryption_key.key_ocid}",
+      "Allow service objectstorage-${var.secondary_region} to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label} where target.key.id = ${module.master_encryption_key.key_ocid}",
+      "Allow service blockstorage, objectstorage-${var.region}, oke, streaming to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label}"
     ]
   }
 
@@ -196,9 +206,9 @@ module "key_policy" {
   source           = "./modules/policies"
   count            = var.home_region_deployment ? 1 : 0
   compartment_ocid = var.home_region_deployment ? module.home_compartment[0].compartment_id : var.multi_region_home_compartment_ocid
-  policy_name      = local.key_policy.name
-  description      = local.key_policy.description
-  statements       = local.key_policy.statements
+  policy_name      = local.onsr_flag == "false" ? local.key_policy.name : local.key_policy_onsr.name
+  description      = local.onsr_flag == "false" ? local.key_policy.description : local.key_policy_onsr.description
+  statements       = local.onsr_flag == "false" ? local.key_policy.statements : local.key_policy_onsr.statements
   depends_on       = [module.master_encryption_key]
 }
 
