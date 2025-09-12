@@ -4,8 +4,8 @@
 # ###################################################################################################### #
 
 locals {
-  la_default_group_ocid = try( module.logging_analytics_default_group[0].log_group_ocid, "null" )
-  la_audit_group_ocid   = try( module.logging_analytics_audit_group[0].log_group_ocid, "null" )
+  la_default_group_ocid = try(module.logging_analytics_default_group[0].log_group_ocid, "null")
+  la_audit_group_ocid   = try(module.logging_analytics_audit_group[0].log_group_ocid, "null")
 
   vdms_critical_topic = {
     topic_name            = "VDMS-Critical-${var.resource_label}"

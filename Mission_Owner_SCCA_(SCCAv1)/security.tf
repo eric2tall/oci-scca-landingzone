@@ -4,8 +4,8 @@
 # ###################################################################################################### #
 
 locals {
-  
-  onsr_flag = ( (var.realm_key == "6") || (var.realm_key == "11") ) ? "true" : "false"
+
+  onsr_flag = ((var.realm_key == "6") || (var.realm_key == "11")) ? "true" : "false"
   // TODO: need backup bucket spec
   backup_bucket = {
     name                                = "${var.backup_bucket_name}-${var.resource_label}"
@@ -576,8 +576,8 @@ module "vss_log" {
 }
 
 module "waf_log" {
-  count               = local.onsr_flag == "false" ? 1 : 0
-  source              = "./modules/service-log"
+  count  = local.onsr_flag == "false" ? 1 : 0
+  source = "./modules/service-log"
 
   log_display_name    = local.waf_log.log_display_name
   log_type            = local.waf_log.log_type
