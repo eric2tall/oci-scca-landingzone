@@ -155,7 +155,7 @@ The landing zone deploys policies that will grant administrative priviledges to 
 
 ## ONSR Deployment
 
-To deploy the SCCA v1.2.2 solution on the ONSR regions OC6 and OC11, please update several variables in the solution tfvar configuration files.
+To deploy the SCCA v1.2.2 solution on the ONSR regions OC6 and OC11, please update several variables in the solution tfvar configuration files or via OCI RMS.
 
 * realm_key variable: Set to 6 or 11
 * has_correct_domain_name variable: if OCI realm is 11 set this variable to oraclecloud.smil.mil
