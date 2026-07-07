@@ -61,7 +61,7 @@ locals {
           destination_type  = "CIDR_BLOCK"
         }
         "all_service" = {
-          network_entity_id = module.drg.drg_id
+          network_entity_id = module.workload_sgw.sgw_id
           destination       = data.oci_core_services.all_oci_services.services[0]["cidr_block"]
           destination_type  = "SERVICE_CIDR_BLOCK"
         }
@@ -102,6 +102,13 @@ locals {
   workload_load_balancer = {
     lb_name   = "${var.wrk_compartment_name_prefix}-WRK-LB-${local.region_key[0]}-${var.workload_postfix}"
     lb_subnet = module.workload_network.subnets[local.workload_network.subnet_map["OCI-SCCA-LZ-Workload-SUB"].name]
+  }
+
+  workload_sgw = {
+    sgw_display_name         = "${var.wrk_compartment_name_prefix}-VCN-${local.region_key[0]}-SGW"
+    service_id               = data.oci_core_services.all_oci_services.services[0]["id"]
+    route_table_display_name = "${var.wrk_compartment_name_prefix}-SGW-RT"
+    route_rules              = {}
   }
 
   workload_vtap = {
@@ -157,6 +164,17 @@ module "workload_db_network" {
   vcn_dns_label            = local.workload_db_network.vcn_dns_label
   lockdown_default_seclist = local.workload_db_network.lockdown_default_seclist
   subnet_map               = local.workload_db_network.subnet_map
+}
+
+module "workload_sgw" {
+  source = "./modules/vcn-gateways"
+
+  compartment_id           = var.home_region_deployment ? module.workload_compartment[0].compartment_id : var.multi_region_workload_compartment_ocid
+  service_id               = local.workload_sgw.service_id
+  sgw_display_name         = local.workload_sgw.sgw_display_name
+  route_table_display_name = local.workload_sgw.route_table_display_name
+  route_rules              = local.workload_sgw.route_rules
+  vcn_id                   = module.workload_network.vcn_id
 }
 
 module "workload_route_table" {

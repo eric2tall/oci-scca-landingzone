@@ -55,7 +55,7 @@ locals {
     name            = "${var.master_encryption_key_name}-${var.resource_label}"
     algorithm       = "AES"
     length          = 32
-    protection_mode = local.onsr_flag == "false" ? "HSM" : "SOFTWARE"
+    protection_mode = "SOFTWARE"
   }
 
   service_event_stream = {

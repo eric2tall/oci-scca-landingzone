@@ -85,8 +85,8 @@ locals {
     statements = [
       "Allow service objectstorage-${var.region} to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label} where target.key.id = ${module.master_encryption_key.key_ocid}",
       "Allow service objectstorage-${var.secondary_region} to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label} where target.key.id = ${module.master_encryption_key.key_ocid}",
-      "Allow service blockstorage,FssOc${var.realm_key}Prod,oke,streaming to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label} where target.key.id = ${module.master_encryption_key.key_ocid}",
-      "Allow service blockstorage, objectstorage-${var.region}, objectstorage-${var.secondary_region}, FssOc${var.realm_key}Prod, oke, streaming to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label}"
+      "Allow service blockstorage,FssOc1Prod,oke,streaming to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label} where target.key.id = ${module.master_encryption_key.key_ocid}",
+      "Allow service blockstorage, objectstorage-${var.region}, objectstorage-${var.secondary_region}, FssOc1Prod, oke, streaming to use keys in compartment ${var.vdms_compartment_name}-${local.region_key[0]}-${var.resource_label}"
     ]
   }
   key_policy_onsr = {

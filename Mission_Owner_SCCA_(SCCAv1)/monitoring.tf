@@ -144,13 +144,13 @@ locals {
 
   logging_analytics_default_group = {
     namespace    = local.onsr_flag == "false" ? data.oci_log_analytics_namespaces.logging_analytics_namespaces[0].namespace_collection[0].items[0].namespace : null
-    display_name = "Default_Group_${var.resource_label}"
+    display_name = "LZ-Default_Group_${var.resource_label}"
     description  = "Logging Analytics Log Group created by Landing Zone for Default_Group"
   }
 
   logging_analytics_audit_group = {
     namespace    = local.onsr_flag == "false" ? data.oci_log_analytics_namespaces.logging_analytics_namespaces[0].namespace_collection[0].items[0].namespace : null
-    display_name = "AuditLog_${var.resource_label}"
+    display_name = "LZ-AuditLog_${var.resource_label}"
     description  = "Logging Analytics Log Group created by Landing Zone for AuditLog"
   }
 
@@ -201,7 +201,7 @@ locals {
 }
 
 module "logging_analytics_namespace" {
-  count                  = var.onboard_log_analytics || local.onsr_flag == "false" ? 1 : 0
+  count                  = var.onboard_log_analytics ? 1 : 0
   source                 = "./modules/log-analytics-namespace"
   compartment_id         = var.tenancy_ocid
   is_onboarded           = local.logging_analytics.is_onboarded
@@ -211,7 +211,7 @@ module "logging_analytics_namespace" {
 }
 
 module "logging_analytics_default_group" {
-  count          = local.onsr_flag == "false" ? 1 : 0
+  count          = 0
   source         = "./modules/logging-analytics-log-group"
   compartment_id = var.home_region_deployment ? module.vdms_compartment[0].compartment_id : var.multi_region_vdms_compartment_ocid
   tenancy_ocid   = var.tenancy_ocid
@@ -224,7 +224,7 @@ module "logging_analytics_default_group" {
 }
 
 module "logging_analytics_audit_group" {
-  count          = local.onsr_flag == "false" ? 1 : 0
+  count          = 0
   source         = "./modules/logging-analytics-log-group"
   compartment_id = var.home_region_deployment ? module.vdms_compartment[0].compartment_id : var.multi_region_vdms_compartment_ocid
   tenancy_ocid   = var.tenancy_ocid
@@ -255,7 +255,7 @@ module "audit_logging_analytics_policy" {
 }
 
 module "default_logging_analytics_service_connector" {
-  count               = local.onsr_flag == "false" ? 1 : 0
+  count               = 0
   source              = "./modules/service-connector-logging-analytics"
   compartment_id      = var.home_region_deployment ? module.vdms_compartment[0].compartment_id : var.multi_region_vdms_compartment_ocid
   display_name        = local.default_logging_analytics_service_connector.display_name
@@ -271,7 +271,7 @@ module "default_logging_analytics_service_connector" {
 }
 
 module "audit_logging_analytics_service_connector" {
-  count               = local.onsr_flag == "false" ? 1 : 0
+  count               = 0
   source              = "./modules/service-connector-logging-analytics"
   compartment_id      = var.home_region_deployment ? module.vdms_compartment[0].compartment_id : var.multi_region_vdms_compartment_ocid
   display_name        = local.audit_logging_analytics_service_connector.display_name

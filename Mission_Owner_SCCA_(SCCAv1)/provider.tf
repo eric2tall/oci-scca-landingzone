@@ -9,7 +9,7 @@ terraform {
   required_providers {
     oci = {
       source  = "oracle/oci"
-      version = "5.9.0"
+      version = "= 5.9.0"
     }
   }
 }
@@ -36,6 +36,8 @@ provider "oci" {
   fingerprint      = var.api_fingerprint
   private_key_path = var.api_private_key_path
   region           = var.region
+  retry_duration_seconds = 1800
+  disable_auto_retries   = false
 }
 
 provider "oci" {
@@ -45,6 +47,8 @@ provider "oci" {
   fingerprint      = var.api_fingerprint
   private_key_path = var.api_private_key_path
   region           = local.home_region[0]
+  retry_duration_seconds = 1800
+  disable_auto_retries   = false
 }
 
 provider "oci" {
@@ -54,4 +58,6 @@ provider "oci" {
   fingerprint      = var.api_fingerprint
   private_key_path = var.api_private_key_path
   region           = var.secondary_region
+  retry_duration_seconds = 1800
+  disable_auto_retries   = false
 }

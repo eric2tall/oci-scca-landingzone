@@ -38,3 +38,26 @@ output "identity_domain_name" {
 output "key_ocid" {
   value = module.master_encryption_key.key_ocid
 }
+# Additional outputs for OKE deployment
+# Add these to the existing outputs.tf in Mission_Owner_SCCA_(SCCAv1)/
+
+output "workload_compartment_id" {
+  description = "OCID of the Workload compartment"
+  value       = module.workload_compartment[0].compartment_id
+}
+
+output "workload_vcn_id" {
+  description = "OCID of the Workload VCN"
+  value       = module.workload_network.vcn_id
+}
+
+output "workload_subnet_id" {
+  description = "OCID of the Workload subnet"
+  value       = module.workload_network.subnets[local.workload_network.subnet_map["OCI-SCCA-LZ-Workload-SUB"].name]
+}
+
+output "vdss_lb_subnet_id" {
+  description = "OCID of the VDSS LB subnet (SUB2)"
+  value       = module.vdss_network.subnets[local.vdss_network.subnet_map["OCI-SCCA-LZ-VDSS-SUB2"].name]
+}
+
