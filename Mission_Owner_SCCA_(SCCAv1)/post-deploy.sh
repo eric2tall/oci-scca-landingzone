@@ -4,6 +4,9 @@
 
 set -e
 
+
+# Read resource label from tfvars
+RESOURCE_LABEL=$(grep "resource_label" terraform.tfvars | awk -F'"' '{print $2}')
 echo "======================================================"
 echo "  VA Locator Post-Deploy Configuration"
 echo "======================================================"
@@ -31,7 +34,7 @@ echo ""
 echo ">>> Getting VDSS compartment..."
 VDSS_COMPARTMENT_ID=$(oci iam compartment list \
   --compartment-id "$HOME_COMPARTMENT_ID" \
-  --all 2>/dev/null | jq -r '.data[] | select(.name | contains("VDSS")) | .id')
+  --all 2>/dev/null | jq -r --arg label "$RESOURCE_LABEL" '.data[] | select(.name | test("VDSS-IAD-" + $label)) | .id')
 echo "VDSS Compartment: $VDSS_COMPARTMENT_ID"
 
 # ── Update NFW subnet (SUB1) route table ─────────────────
@@ -98,15 +101,16 @@ if [ -z "$NAT" ]; then
   echo "NAT Gateway created: $NAT"
 else
   echo "NAT Gateway already exists: $NAT"
+fi
 
 # ── Add public subnet CIDR to Workload VCN ───────────────
 echo ""
 echo ">>> Adding public subnet CIDR to Workload VCN..."
-EXISTING_CIDRS=$(oci network vcn get --vcn-id "$WORKLOAD_VCN" 2>/dev/null | jq -r '.data["cidr-blocks"][]')
+EXISTING_CIDRS=$(oci network vcn get --vcn-id "$WORKLOAD_VCN_ID" 2>/dev/null | jq -r '.data["cidr-blocks"][]')
 if echo "$EXISTING_CIDRS" | grep -q "192.168.4.0/24"; then
   echo "Public CIDR 192.168.4.0/24 already exists."
 else
-  oci network vcn add-vcn-cidr --vcn-id "$WORKLOAD_VCN" --cidr-block "192.168.4.0/24"
+  oci network vcn add-vcn-cidr --vcn-id "$WORKLOAD_VCN_ID" --cidr-block "192.168.4.0/24"
   echo "Added 192.168.4.0/24 to Workload VCN."
 fi
 
