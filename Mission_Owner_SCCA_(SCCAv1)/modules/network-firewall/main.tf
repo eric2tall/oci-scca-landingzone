@@ -25,6 +25,10 @@ resource "oci_network_firewall_network_firewall" "network_firewall" {
   subnet_id                  = var.network_firewall_subnet_id
   display_name               = var.network_firewall_name
 
+  defined_tags = {
+    "CostTracking.Environment" = "nfw-demo"
+  }
+
   depends_on = [oci_network_firewall_network_firewall_policy.network_firewall_policy]
 }
 
