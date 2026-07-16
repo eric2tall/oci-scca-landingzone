@@ -17,7 +17,7 @@ fi
 
 if [[ -z "$TENANCY_OCID" || "$TENANCY_OCID" == "null" ]]; then
   echo "ERROR: could not auto-detect tenancy OCID. Set it manually, e.g.:" >&2
-  echo "  TENANCY_OCID=ocid1.tenancy.oc1..xxxx ./oci_limits.sh" >&2
+  echo "  TENANCY_OCID=ocid1.tenancy.oc2..aaaaaaaa6wmvw62q6s4zfsthrisvuxkjf4qkiya3miybnbuvpbrhelvshgra ./oci_limits.sh" >&2
   exit 1
 fi
 echo "Tenancy OCID: $TENANCY_OCID"
